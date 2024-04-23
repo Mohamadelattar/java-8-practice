@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static org.assertj.core.api.Assertions.*;
@@ -73,6 +74,7 @@ public class StreamsExercises {
         // convert the the sentence to a stream and print the words, one per line.
 
         // TODO
+        sentence.stream().forEach(System.out::println);
         
         assertThat(interceptedText.toString(defaultCharset())).isEqualTo("I\ncan\nprint\na\nstream\n.\n");
     }
@@ -92,6 +94,7 @@ public class StreamsExercises {
         // Count the number of words.
 
         // TODO
+        count = Arrays.stream(words).count();
 
         assertThat(count).isEqualTo(4);
     }
@@ -111,7 +114,9 @@ public class StreamsExercises {
         // Add the lengths of all the words.
 
         // TODO
-
+        words.stream()
+                .mapToInt(w -> w.length())
+                .sum();
         assertThat(totalLength).isEqualTo(19);
     }
     /*
@@ -130,8 +135,10 @@ public class StreamsExercises {
         // Start with List<Person> people which is defined above. Make a list of first names.
 
         // TODO
-
-        assertThat(names).isEqualTo(Arrays.asList("Bernard", "Duncan", "Anastasia", "Charlotte", "Daphne", "Gerald", "Eustace", "Felicity"));
+        names = people.stream()
+                    .map(Person::getFirstName)
+                    .collect(Collectors.toList());
+    assertThat(names).isEqualTo(Arrays.asList("Bernard", "Duncan", "Anastasia", "Charlotte", "Daphne", "Gerald", "Eustace", "Felicity"));
     }
     /*
      * Shows:
@@ -148,7 +155,8 @@ public class StreamsExercises {
         // Start with List<Person> people which is defined above. Make a map with key = first name, value = last name.
 
         // TODO
-
+        firstToLast = people.stream()
+                            .collect(Collectors.toMap(Person::getFirstName, Person::getLastName));
         assertThat(firstToLast).containsOnly(
                 entry("Bernard", "Sawrey"),
                 entry("Duncan", "Sawrey"),
