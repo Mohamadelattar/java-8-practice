@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.nio.charset.Charset.defaultCharset;
 import static org.assertj.core.api.Assertions.*;
@@ -184,7 +185,8 @@ public class StreamsExercises {
         // Make a map with key = first name in lower case, value = last name in upper case.
 
         // TODO
-
+        firstToLast = people.stream()
+                .collect(Collectors.toMap(person -> person.getFirstName().toLowerCase(), person -> person.getLastName().toUpperCase()));
         assertThat(firstToLast).containsOnly(
                 entry("bernard", "SAWREY"),
                 entry("duncan", "SAWREY"),
@@ -213,6 +215,9 @@ public class StreamsExercises {
         // Join all the first names to form a comma separated string.
 
         // TODO
+        names = people.stream()
+                      .map(Person::getFirstName)
+                      .collect(Collectors.joining(","));
 
         assertThat(names).isEqualTo("Bernard,Duncan,Anastasia,Charlotte,Daphne,Gerald,Eustace,Felicity");
     }
@@ -233,7 +238,9 @@ public class StreamsExercises {
         // Start with List<Person> people which is defined above. Make a list of first names in alphabetical order.
 
         // TODO
-
+        names = people.stream().map(Person::getFirstName)
+                               .sorted()
+                               .collect(Collectors.toList());
         assertThat(names).isEqualTo(Arrays.asList("Anastasia", "Bernard", "Charlotte", "Daphne", "Duncan", "Eustace", "Felicity", "Gerald"));
     }
     /*
@@ -255,8 +262,11 @@ public class StreamsExercises {
         // order when sorted by last name then first name.
 
         // TODO
-
-        assertThat(names).containsExactlyElementsOf(Arrays.asList(
+        names = people.stream()
+                      .sorted(Comparator.comparing(Person::getLastName).thenComparing(Person::getFirstName))
+                      .limit(3)
+                      .collect(Collectors.toList());
+    assertThat(names).containsExactlyElementsOf(Arrays.asList(
                 new Person("Felicity", "Coniston"),
                 new Person("Eustace", "Hawkshead"),
                 new Person("Gerald", "Hawkshead")
@@ -282,7 +292,11 @@ public class StreamsExercises {
         // alphabetical order.
 
         // TODO
-
+         names = people.stream()
+                .flatMap(person -> Stream.of(person.getFirstName(), person.getLastName()))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
         assertThat(names).isEqualTo(Arrays.asList("Anastasia", "Bernard", "Charlotte", "Coniston", "Daphne", "Duncan",
                                                   "Eustace", "Felicity", "Gerald", "Hawkshead", "Sawrey"));
     }
@@ -344,7 +358,7 @@ public class StreamsExercises {
         // key = last name and value = a list of people with that last name.
 
         // TODO
-
+        groups = people.stream().collect(Collectors.groupingBy(Person::getLastName));
         assertThat(groups).containsKeys("Coniston", "Hawkshead", "Sawrey");
 
         // People with last name = "Coniston"
